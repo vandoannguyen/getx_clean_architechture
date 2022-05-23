@@ -1,0 +1,110 @@
+def localProperties = new Properties()
+def keyProperties = new Properties()
+def keyPropertiesProd = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+def keyPropertiesFile = rootProject.file('dev_key.properties')
+def keyPropertiesProdFile = rootProject.file('key.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+if (keyPropertiesFile.exists()) {
+    keyProperties.load(new FileInputStream(keyPropertiesFile))
+}
+if (keyPropertiesProdFile.exists()) {
+    keyPropertiesProd.load(new FileInputStream(keyPropertiesProdFile))
+}
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.google.gms.google-services'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+android {
+    compileSdkVersion flutter.compileSdkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    signingConfigs {
+        debug {
+            storePassword = keyProperties["key.storePassword"]
+            keyAlias = keyProperties["key.keyAlias"]
+            keyPassword = keyProperties["key.keyPassword"]
+            storeFile file(keyProperties["key.keystore"])
+        }
+        release {
+            storePassword = keyPropertiesProd["key.storePassword"]
+            keyAlias = keyPropertiesProd["key.keyAlias"]
+            keyPassword = keyPropertiesProd["key.keyPassword"]
+//            storeFile file(keyPropertiesProd["key.keystore"])
+        }
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.example.baese_flutter_bloc"
+        minSdkVersion 19
+        targetSdkVersion flutter.targetSdkVersion
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+    productFlavors {
+        prod {
+            flavorDimensions "prod"
+//            applicationIdSuffix ".prod"
+            resValue "string", "app_name", "AppName_PROD"
+        }
+
+        dev {
+            flavorDimensions "dev"
+//            applicationIdSuffix ".dev"
+            resValue "string", "app_name", "AppName_DEV"
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation platform('com.google.firebase:firebase-bom:30.0.1')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation("androidx.multidex:multidex:2.0.1")
+}
