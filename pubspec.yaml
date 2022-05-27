@@ -36,27 +36,30 @@ dependencies:
   cupertino_icons: ^1.0.4
   injectable: ^1.5.3 # inject (DI)
   get_it: ^7.2.0 # inject (DI)
-  overlay_support: ^1.2.1
+  overlay_support: ^2.0.0
   equatable: ^2.0.3
   get: ^4.6.5
   #  firebase
   firebase_analytics: ^9.1.8
   firebase_auth: ^3.3.18
   firebase_core: ^1.17.0
-  google_sign_in: ^5.3.1
+  google_sign_in: ^5.3.2
   the_apple_sign_in: ^1.1.1
   flutter_facebook_auth: ^4.3.4
+  dio: ^4.0.6
+#  mock test
+  mocktail: ^0.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
   injectable_generator: ^1.5.3
-  build_runner: ^2.1.10
+  build_runner: ^2.1.11
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
